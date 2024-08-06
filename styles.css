@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #191f25;
+    background-color: #a33615;
     color: white;
     padding: 1rem 0;
 }
@@ -28,7 +28,7 @@ nav {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    background-color: #191f25; /* Matches the theme color */
+    background-color: #a33615; /* Matches the theme color */
 }
 
 .logo a {
@@ -67,7 +67,7 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #5c7288;
+    color: #a33615;
     text-align: center;
 }
 
@@ -93,7 +93,7 @@ nav {
 .features h2, .vision h2 {
     font-size: 2rem;
     margin-bottom: 20px;
-    color: #191f25;
+    color: #a33615; 
 }
 
 .feature {
@@ -110,7 +110,7 @@ nav {
 }
 
 .feature a {
-    color: #5271ff;
+    color: #a33615;
     text-decoration: underline;
     font-weight: bold;
     transition: color 0.3s ease;
@@ -121,7 +121,7 @@ nav {
 }
 
 footer {
-    background-color: #333;
+    background-color: #a33615;
     color: white;
     padding: 20px 0;
     text-align: center;
