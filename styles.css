@@ -65,7 +65,7 @@ nav {
     text-shadow: -2px 1px 16px black;
     background-image: url('merlion-statue-cityscape-singapore_335224-666.png');
     background-size: cover;
-    background-position: center;
+    background-position: top;
     height: 80vh;
     display: flex;
     justify-content: center;
