@@ -15,7 +15,8 @@ header {
 }
 
 .logo img {
-    max-height: 80px; /* Adjust the logo size */
+    max-height: 80px;
+    /* Adjust the logo size */
     width: auto;
     margin-right: 15px;
     vertical-align: middle;
@@ -28,7 +29,8 @@ nav {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    background-color: #a33615; /* Matches the theme color */
+    background-color: #a33615;
+    /* Matches the theme color */
 }
 
 .logo a {
@@ -60,14 +62,15 @@ nav {
 }
 
 .hero {
+    text-shadow: -2px 1px 16px black;
     background-image: url('merlion-statue-cityscape-singapore_335224-666.png');
     background-size: cover;
     background-position: center;
-    height: 40vh;
+    height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #a33615;
+    color: #fffdfd;
     text-align: center;
 }
 
@@ -80,7 +83,8 @@ nav {
     font-size: 1.2rem;
 }
 
-.features, .vision {
+.features,
+.vision {
     padding: 40px 20px;
     background-color: #fff;
 }
@@ -90,10 +94,11 @@ nav {
     margin: 0 auto;
 }
 
-.features h2, .vision h2 {
+.features h2,
+.vision h2 {
     font-size: 2rem;
     margin-bottom: 20px;
-    color: #a33615; 
+    color: #a33615;
 }
 
 .feature {
