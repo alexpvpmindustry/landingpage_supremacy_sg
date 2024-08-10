@@ -21,6 +21,39 @@
 
         gtag('config', 'G-BFSE86TN6F');
     </script>
+    <style>
+        /* Minimal CSS for responsive layout */
+        .container_substack {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 columns layout */
+            gap: 20px;
+            /* Space between items */
+        }
+
+        @media (max-width: 768px) {
+            .container_substack {
+                grid-template-columns: repeat(2, 1fr);
+                /* 2 columns layout */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container_substack {
+                grid-template-columns: 1fr;
+                /* Single column layout */
+            }
+        }
+
+        /* Optional styling for visual clarity */
+        .item_substack {
+            background-color: #e0a64f36;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 
 <body>
@@ -89,38 +122,46 @@
             </div>
         </section>
         <section class="features">
-            <div class="container">
-                <div class="substack-post-embed">
-                    <p lang="en">The Race for AI Supremacy: Why It Matters by alex mindustry</p>
-                    <p>Imagine a world where the nation or company that leads in AI not only dominates the global
-                        economy
-                        but
-                        also shapes the future of humanity.</p><a data-post-link
-                        href="https://alexmindustry.substack.com/p/the-race-for-ai-supremacy-why-it">Read on
-                        Substack</a>
+            <div class="container_substack">
+                <div class="item_substack">
+                    <div class="substack-post-embed">
+                        <p lang="en">The Race for AI Supremacy: Why It Matters by alex mindustry</p>
+                        <p>Imagine a world where the nation or company that leads in AI not only dominates the global
+                            economy
+                            but
+                            also shapes the future of humanity.</p><a data-post-link
+                            href="https://alexmindustry.substack.com/p/the-race-for-ai-supremacy-why-it">Read on
+                            Substack</a>
+                    </div>
                 </div>
                 <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script>
-            <!-- </div>
-            <div class="container"> -->
-                <div class="substack-post-embed">
-                    <p lang="en">What does it mean to be an AI hub for Singapore? by Eugene Cheah</p>
-                    <p>With AI being a buzz word these days, there been much discussions lately into turning Singapore
-                        into
-                        an AI hub. But what do we mean by that?</p><a data-post-link
-                        href="https://substack.tech-talk-cto.com/p/what-does-it-mean-to-be-an-ai-hub">Read on
-                        Substack</a>
+                <!-- </div>
+            <div class="container_substack"> -->
+                <div class="item_substack">
+                    <div class="substack-post-embed">
+                        <p lang="en">What does it mean to be an AI hub for Singapore? by Eugene Cheah</p>
+                        <p>With AI being a buzz word these days, there been much discussions lately into turning
+                            Singapore
+                            into
+                            an AI hub. But what do we mean by that?</p><a data-post-link
+                            href="https://substack.tech-talk-cto.com/p/what-does-it-mean-to-be-an-ai-hub">Read on
+                            Substack</a>
+                    </div>
                 </div>
-                <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script>
-            <!-- </div>
-            <div class="container"> -->
-                <div class="substack-post-embed">
-                    <p lang="en">What does it mean to be an AI hub for Singapore? by Eugene Cheah</p>
-                    <p>With AI being a buzz word these days, there been much discussions lately into turning Singapore
-                        into an AI hub. But what do we mean by that?</p><a data-post-link
-                        href="https://substack.tech-talk-cto.com/p/what-does-it-mean-to-be-an-ai-hub">Read on
-                        Substack</a>
+                <!-- <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script> -->
+                <!-- </div>
+            <div class="container_substack"> -->
+                <div class="item_substack">
+                    <div class="substack-post-embed">
+                        <p lang="en">What does it mean to be an AI hub for Singapore? by Eugene Cheah</p>
+                        <p>With AI being a buzz word these days, there been much discussions lately into turning
+                            Singapore
+                            into an AI hub. But what do we mean by that?</p><a data-post-link
+                            href="https://substack.tech-talk-cto.com/p/what-does-it-mean-to-be-an-ai-hub">Read on
+                            Substack</a>
+                    </div>
                 </div>
-                <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script>
+                <!-- <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script> -->
             </div>
         </section>
     </main>
