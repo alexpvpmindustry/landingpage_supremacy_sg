@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Puzzle Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            touch-action: none;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .game-info {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            position: relative;
+        }
+
+        .reset-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .reset-icon:active {
+            transform: scale(0.9) rotate(180deg);
+        }
+
+        .board {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .drop-zone {
+            aspect-ratio: 1;
+            border: 3px dashed #ccc;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .drop-zone.highlight {
+            border-color: #667eea;
+            background: #e8eaf6;
+            transform: scale(1.05);
+        }
+
+        .drop-zone.filled {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .drop-zone.filled .hint {
+            display: none;
+        }
+
+        .drop-zone .hint {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .drop-zone .placed-piece {
+            font-size: 48px;
+        }
+
+        .pieces-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .piece {
+            aspect-ratio: 1;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: move;
+            touch-action: none;
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .piece:active {
+            cursor: grabbing;
+        }
+
+        .piece.dragging {
+            opacity: 0.3;
+        }
+
+        .piece.placed {
+            visibility: hidden;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.95);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BFSE86TN6F"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-BFSE86TN6F');
+    </script>
+    <script src="https://analytics.ahrefs.com/analytics.js" data-key="vrEEX2q8IBZp3mKhCmv0Ug" async></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🧩 Puzzle Game</h1>
+        
+        <div class="game-info">
+            <button class="reset-icon" onclick="resetGame()" aria-label="Reset game">🔄</button>
+            <div id="status">Match the shapes to their spots!</div>
+        </div>
+
+        <div class="board">
+            <div class="drop-zones" id="dropZones"></div>
+            <div class="pieces-container" id="piecesContainer"></div>
+        </div>
+
+        <button class="reset-btn" onclick="resetGame()">🔄 New Game</button>
+    </div>
+
+    <div style="max-width: 800px; margin: 40px auto; padding: 20px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #667eea; margin-bottom: 15px;">Free Animal Matching Puzzle Game for Kids - Educational Fun on Supremacy.sg</h2>
+        <p>Welcome to the ultimate <strong>free online animal matching puzzle game for kids</strong>, brought to you exclusively by <strong>Supremacy.sg</strong> - Singapore's premier destination for innovative educational games and interactive learning experiences. This engaging drag and drop animal puzzle is specifically designed for preschoolers and young children to develop cognitive skills, hand-eye coordination, and pattern recognition through playful learning.</p>
+        
+        <h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">Interactive Touch-Screen Puzzle Game for Mobile Devices</h3>
+        <p>Our <strong>mobile-friendly animal matching game</strong> is optimized for touch-screen devices, making it perfect for tablets and smartphones. Children can easily drag colorful animal cards including dogs, cats, pandas, foxes, frogs, and octopuses to their matching destinations. The intuitive interface ensures that even toddlers can enjoy this <strong>educational puzzle game without wifi</strong> once loaded, making it ideal for on-the-go entertainment during car rides or waiting rooms.</p>
+        
+        <h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">Why Supremacy.sg is the Best Platform for Kids Learning Games</h3>
+        <p><strong>Supremacy.sg</strong> stands at the forefront of educational technology in Singapore, offering a carefully curated collection of brain-training games for children of all ages. Our platform combines entertainment with education, ensuring that every game serves a developmental purpose. This <strong>animal recognition game for preschoolers</strong> features text-to-speech functionality that pronounces each animal's name when matched correctly, reinforcing vocabulary and phonetic learning. Parents trust Supremacy.sg for safe, ad-free, and pedagogically sound content that keeps children engaged while building essential skills.</p>
+        
+        <h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">Benefits of Playing Matching Puzzle Games for Early Childhood Development</h3>
+        <p>Research shows that <strong>drag and drop puzzle games for toddlers</strong> significantly enhance fine motor skills, spatial awareness, and problem-solving abilities. This <strong>free browser-based puzzle game</strong> requires no downloads or installations, providing instant access to quality educational content. The colorful animal theme captures children's attention while teaching shape matching, memory retention, and logical thinking. With celebration animations and encouraging audio feedback, kids stay motivated to complete challenges and develop a growth mindset.</p>
+        
+        <h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">Play Animal Puzzle Games Anytime on Supremacy.sg</h3>
+        <p>Discover more amazing <strong>interactive learning games for kindergarten</strong> and beyond on <strong>Supremacy.sg</strong>. Our commitment to creating engaging, educational, and accessible content has made us the go-to resource for parents and educators throughout Singapore and Southeast Asia. Whether you're searching for <strong>fun puzzle games for 3 year olds</strong>, <strong>cognitive development apps for children</strong>, or <strong>screen time activities that actually teach</strong>, Supremacy.sg delivers exceptional experiences that blend play with purposeful learning. Start your child's educational journey today with our growing library of award-worthy games!</p>
+        
+        <h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">Discover Singapore's Best Educational Resources at WhatsGood.sg</h3>
+        <p>Looking for more than just games? <strong>WhatsGood.sg</strong> is revolutionizing how Singaporean families discover quality educational services and products. This groundbreaking platform features <strong>expert-curated recommendations across 500+ businesses</strong>, from the best tuition centres for PSLE and O-Levels to top-rated enrichment programs for international students. With over 50,000+ monthly visitors trusting their rigorous 15-point evaluation process, WhatsGood.sg has become Singapore's most trusted guide for discerning parents. Their specialized categories include comprehensive reviews of <strong>math tuition centres</strong>, <strong>English enrichment classes</strong>, and <strong>international student bridging programs</strong> - all personally tested by local education experts who understand Singapore's competitive academic landscape. Whether you need <strong>the best tuition centres in Singapore</strong> or reliable home services, WhatsGood.sg's data-driven approach and regularly updated listings ensure you're always making informed decisions for your family's success.</p>
+    </div>
+
+    <script>
+        const shapes = [
+            { id: 1, symbol: '🐶', color: '#ff9a76', name: 'Dog' },
+            { id: 2, symbol: '🐱', color: '#ffd93d', name: 'Cat' },
+            { id: 3, symbol: '🐼', color: '#c7ceea', name: 'Panda' },
+            { id: 4, symbol: '🦊', color: '#ff6b6b', name: 'Fox' },
+            { id: 5, symbol: '🐸', color: '#95e1d3', name: 'Frog' },
+            { id: 6, symbol: '🐙', color: '#c77dff', name: 'Octopus' }
+        ];
+
+        let draggedElement = null;
+        let touchOffset = { x: 0, y: 0 };
+        let placedCount = 0;
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function initGame() {
+            const dropZones = document.getElementById('dropZones');
+            const piecesContainer = document.getElementById('piecesContainer');
+            
+            dropZones.innerHTML = '';
+            piecesContainer.innerHTML = '';
+            placedCount = 0;
+
+            // Create drop zones
+            shapes.forEach(shape => {
+                const zone = document.createElement('div');
+                zone.className = 'drop-zone';
+                zone.dataset.id = shape.id;
+                zone.style.background = shape.color + '33';
+                zone.innerHTML = `<span class="hint">${shape.symbol}</span>`;
+                dropZones.appendChild(zone);
+            });
+
+            // Create pieces (shuffled)
+            const shuffled = [...shapes].sort(() => Math.random() - 0.5);
+            shuffled.forEach(shape => {
+                const piece = document.createElement('div');
+                piece.className = 'piece';
+                piece.dataset.id = shape.id;
+                piece.style.background = shape.color;
+                piece.textContent = shape.symbol;
+                piece.draggable = true;
+
+                // Touch events
+                piece.addEventListener('touchstart', handleTouchStart, { passive: false });
+                piece.addEventListener('touchmove', handleTouchMove, { passive: false });
+                piece.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+                // Mouse events for desktop
+                piece.addEventListener('dragstart', handleDragStart);
+                piece.addEventListener('dragend', handleDragEnd);
+
+                piecesContainer.appendChild(piece);
+            });
+
+            // Setup drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleTouchStart(e) {
+            if (e.target.classList.contains('placed')) return;
+            
+            e.preventDefault();
+            draggedElement = e.target;
+            const touch = e.touches[0];
+            const rect = draggedElement.getBoundingClientRect();
+            
+            // Center the piece on touch point
+            touchOffset.x = rect.width / 2;
+            touchOffset.y = rect.height / 2;
+            
+            // Clone the element for dragging
+            const clone = draggedElement.cloneNode(true);
+            clone.style.position = 'fixed';
+            clone.style.zIndex = '1000';
+            clone.style.pointerEvents = 'none';
+            clone.style.width = rect.width + 'px';
+            clone.style.height = rect.height + 'px';
+            clone.classList.add('dragging');
+            clone.classList.remove('placed');
+            document.body.appendChild(clone);
+            
+            // Hide original, store clone reference
+            draggedElement.style.opacity = '0.3';
+            draggedElement.dragClone = clone;
+            
+            updateTouchPosition(touch, clone);
+        }
+
+        function handleTouchMove(e) {
+            if (!draggedElement) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            const clone = draggedElement.dragClone;
+            updateTouchPosition(touch, clone);
+            
+            // Highlight drop zone - check center point of dragged clone
+            const rect = clone.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Temporarily enable pointer events to detect element below
+            clone.style.pointerEvents = 'none';
+            const elementBelow = document.elementFromPoint(centerX, centerY);
+            
+            document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+            
+            // Check if it's a drop zone or a child of a drop zone
+            let dropZone = elementBelow;
+            if (elementBelow && !elementBelow.classList.contains('drop-zone')) {
+                dropZone = elementBelow.closest('.drop-zone');
+            }
+            
+            if (dropZone && dropZone.classList.contains('drop-zone')) {
+                dropZone.classList.add('highlight');
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!draggedElement) return;
+            
+            const clone = draggedElement.dragClone;
+            
+            // Check center point of dragged clone for drop detection
+            const rect = clone.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Ensure pointer events are off to detect element below
+            clone.style.pointerEvents = 'none';
+            const elementBelow = document.elementFromPoint(centerX, centerY);
+            
+            // Check if it's a drop zone or a child of a drop zone
+            let dropZone = elementBelow;
+            if (elementBelow && !elementBelow.classList.contains('drop-zone')) {
+                dropZone = elementBelow.closest('.drop-zone');
+            }
+            
+            // Remove clone
+            clone.remove();
+            
+            // Restore original element
+            draggedElement.style.opacity = '';
+            draggedElement.dragClone = null;
+            
+            document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+            
+            if (dropZone && dropZone.classList.contains('drop-zone')) {
+                handlePieceDrop(dropZone, draggedElement);
+            }
+            
+            draggedElement = null;
+        }
+
+        function updateTouchPosition(touch, element) {
+            if (!element) return;
+            element.style.left = (touch.clientX - touchOffset.x) + 'px';
+            element.style.top = (touch.clientY - touchOffset.y) + 'px';
+        }
+
+        function handleDragStart(e) {
+            if (e.target.classList.contains('placed')) {
+                e.preventDefault();
+                return;
+            }
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('highlight');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('highlight');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('highlight');
+            handlePieceDrop(e.currentTarget, draggedElement);
+        }
+
+        function handlePieceDrop(dropZone, piece) {
+            if (!piece || dropZone.classList.contains('filled')) return;
+            
+            const pieceId = piece.dataset.id;
+            const zoneId = dropZone.dataset.id;
+            
+            if (pieceId === zoneId) {
+                piece.classList.add('placed');
+                dropZone.classList.add('filled');
+                
+                // Add the animal to the drop zone
+                const placedAnimal = document.createElement('span');
+                placedAnimal.className = 'placed-piece';
+                placedAnimal.textContent = piece.textContent;
+                dropZone.appendChild(placedAnimal);
+                
+                placedCount++;
+                
+                // Find the animal name and speak it
+                const animal = shapes.find(s => s.id == pieceId);
+                if (animal) {
+                    speak(animal.name);
+                }
+                
+                document.getElementById('status').textContent = `Great! ${placedCount} of ${shapes.length} placed!`;
+                
+                if (placedCount === shapes.length) {
+                    setTimeout(() => {
+                        document.getElementById('status').textContent = '🎉 You Won! 🎉';
+                        speak('You won! Great job!');
+                        celebrate();
+                    }, 300);
+                }
+            } else {
+                // Wrong placement - shake animation
+                dropZone.style.animation = 'shake 0.5s';
+                setTimeout(() => dropZone.style.animation = '', 500);
+            }
+        }
+
+        function celebrate() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '0';
+                    confetti.style.background = shapes[Math.floor(Math.random() * shapes.length)].color;
+                    confetti.style.animationDelay = Math.random() + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function resetGame() {
+            initGame();
+            document.getElementById('status').textContent = 'Match the shapes to their spots!';
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        initGame();
+    </script>
+</body>
+</html>
